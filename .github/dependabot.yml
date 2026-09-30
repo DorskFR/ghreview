@@ -1,0 +1,47 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/ghreview"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      ghreview-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      # openapi-typescript peer-requires typescript ^5.x
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: npm
+    directory: "/ghreview-ui"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      ghreview-ui-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      # svelte and @dorsk/tsumikit must match the host runtime exactly; they are
+      # bumped with host-runtime.json, not by dependabot.
+      - dependency-name: svelte
+      - dependency-name: "@dorsk/tsumikit"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
