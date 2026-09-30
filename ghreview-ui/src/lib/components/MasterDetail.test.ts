@@ -26,17 +26,35 @@ async function renderMasterDetail(): Promise<void> {
   await tick();
 }
 
+// The panel only renders for a user who has connected a GitHub account — with
+// none, AccountGate replaces the whole view. So `/v1/accounts` answers with one
+// and every other list stays empty.
+const ACCOUNT = {
+  id: "acct-1",
+  login: "someone",
+  poll_interval_ms: null,
+  budget_ceiling: null,
+  rate_limit: null,
+  active: true,
+  created_at: null,
+};
+
+function json(body: unknown): Response {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 beforeEach(() => {
   vi.stubGlobal("EventSource", MockEventSource);
   vi.stubGlobal(
     "fetch",
-    vi.fn(
-      async () =>
-        new Response(JSON.stringify({ items: [], next_cursor: null }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }),
-    ),
+    vi.fn(async (input: RequestInfo | URL) => {
+      const url = typeof input === "string" ? input : input.toString();
+      if (url.includes("/v1/accounts")) return json({ items: [ACCOUNT], next_cursor: null });
+      return json({ items: [], next_cursor: null });
+    }),
   );
   localStorage.clear();
   queryClient.clear();
