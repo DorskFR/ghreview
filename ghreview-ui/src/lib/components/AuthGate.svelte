@@ -29,7 +29,7 @@
     </label>
     <label>
       Account (optional)
-      <Input type="text" bind:value={account} placeholder="DorskFR" spellcheck="false" />
+      <Input type="text" bind:value={account} placeholder="octocat" spellcheck="false" />
     </label>
     <Button type="submit" variant="primary" block>Connect</Button>
     <small>Stored in localStorage. Embedded in cctui, the token is injected for you.</small>

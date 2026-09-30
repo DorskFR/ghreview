@@ -3,7 +3,7 @@ import { z } from "@hono/zod-openapi";
 export const AccountSchema = z
   .string()
   .min(1)
-  .openapi({ example: "DorskFR", description: "GitHub account/login the record was synced for" });
+  .openapi({ example: "octocat", description: "GitHub account/login the record was synced for" });
 
 export const EtagSchema = z
   .string()
@@ -78,7 +78,7 @@ export const SnoozeRequestSchema = z.object({ account: AccountSchema }).openapi(
 export const SnoozeResultSchema = z
   .object({
     account: AccountSchema,
-    owner: z.string().openapi({ example: "DorskFR" }),
+    owner: z.string().openapi({ example: "octocat" }),
     repo: z.string().openapi({ example: "cctui" }),
     number: z.number().int().openapi({ example: 42 }),
     snoozed: z.boolean().openapi({ description: "Whether the PR is now snoozed" }),
@@ -86,7 +86,7 @@ export const SnoozeResultSchema = z
   .openapi("SnoozeResult");
 
 export const SnoozedPullSchema = PullRequestEnvelopeSchema.extend({
-  owner: z.string().openapi({ example: "DorskFR" }),
+  owner: z.string().openapi({ example: "octocat" }),
   repo: z.string().openapi({ example: "cctui" }),
   number: z.number().int().openapi({ example: 42 }),
   snoozed_at: SyncedAtSchema.openapi({ description: "When the PR was snoozed" }),
@@ -202,7 +202,7 @@ export const NotificationInboxQuerySchema = PaginationQuerySchema.extend({
     .optional()
     .openapi({
       param: { name: "repo", in: "query" },
-      example: "DorskFR/cctui",
+      example: "octocat/Hello-World",
       description: "Filter by repository full name",
     }),
   unread: boolParam("unread", "true: only unread & not locally read; false: read"),
@@ -322,7 +322,7 @@ export const SubscriptionCreateSchema = z
     target: z.string().min(1).openapi({
       description:
         "For pull_request: a github.com PR URL or `owner/repo#number`. For repo: `owner/repo`.",
-      example: "https://github.com/DorskFR/cctui/pull/42",
+      example: "https://github.com/octocat/Hello-World/pull/42",
     }),
     account: AccountSchema.optional().openapi({
       description:

@@ -5,7 +5,7 @@ import { deleteIssueComment, deletePullReviewComment } from "../github/comments.
 import { AccountSchema, CommentDeleteResultSchema, ErrorSchema } from "../schemas.ts";
 
 const CommentParams = z.object({
-  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "DorskFR" }),
+  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "octocat" }),
   repo: z.string().openapi({ param: { name: "repo", in: "path" }, example: "cctui" }),
   commentId: z.coerce
     .number()

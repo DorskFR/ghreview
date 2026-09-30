@@ -139,7 +139,7 @@
             <Input
               type="text"
               bind:value={login}
-              placeholder="DorskFR"
+              placeholder="octocat"
               spellcheck="false"
               disabled={saving}
             />

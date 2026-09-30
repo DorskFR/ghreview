@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "cctui gh-review API",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "Versioned HTTP+SSE contract for the GitHub review center. Relays GitHub-shaped JSONB payloads verbatim inside typed envelopes."
   },
   "servers": [
@@ -56,7 +56,7 @@
               "account": {
                 "type": "string",
                 "minLength": 1,
-                "example": "DorskFR",
+                "example": "octocat",
                 "description": "GitHub account/login the record was synced for"
               },
               "owner": {
@@ -99,7 +99,7 @@
               "account": {
                 "type": "string",
                 "minLength": 1,
-                "example": "DorskFR",
+                "example": "octocat",
                 "description": "GitHub account/login the record was synced for"
               },
               "owner": {
@@ -142,7 +142,7 @@
               "account": {
                 "type": "string",
                 "minLength": 1,
-                "example": "DorskFR",
+                "example": "octocat",
                 "description": "GitHub account/login the record was synced for"
               },
               "id": {
@@ -175,7 +175,7 @@
               "account": {
                 "type": "string",
                 "minLength": 1,
-                "example": "DorskFR",
+                "example": "octocat",
                 "description": "GitHub account/login the record was synced for"
               },
               "id": {
@@ -208,7 +208,7 @@
               "account": {
                 "type": "string",
                 "minLength": 1,
-                "example": "DorskFR",
+                "example": "octocat",
                 "description": "GitHub account/login the record was synced for"
               },
               "state": {
@@ -284,7 +284,7 @@
             "items": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "GitHub account/login the record was synced for"
             }
           }
@@ -336,7 +336,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "status": {
@@ -388,7 +388,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "The caller's GitHub login to force-sync; omit when the caller has exactly one account"
           }
         }
@@ -416,7 +416,7 @@
           "login": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "poll_interval_ms": {
@@ -533,7 +533,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "kind": {
@@ -586,7 +586,7 @@
         "properties": {
           "full_name": {
             "type": "string",
-            "example": "DorskFR/cctui"
+            "example": "octocat/Hello-World"
           },
           "private": {
             "type": "boolean",
@@ -651,7 +651,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "kind": {
@@ -703,12 +703,12 @@
             "type": "string",
             "minLength": 1,
             "description": "For pull_request: a github.com PR URL or `owner/repo#number`. For repo: `owner/repo`.",
-            "example": "https://github.com/DorskFR/cctui/pull/42"
+            "example": "https://github.com/octocat/Hello-World/pull/42"
           },
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "The caller's GitHub login to own the subscription; omit when the caller has exactly one account"
           }
         },
@@ -743,7 +743,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "kind": {
@@ -807,7 +807,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "merge_method": {
@@ -909,7 +909,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "reviewers": {
@@ -932,7 +932,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "reviewers": {
@@ -1198,7 +1198,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "paths": {
@@ -1246,7 +1246,7 @@
             "properties": {
               "owner": {
                 "type": "string",
-                "example": "DorskFR"
+                "example": "octocat"
               },
               "repo": {
                 "type": "string",
@@ -1278,12 +1278,12 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "owner": {
             "type": "string",
-            "example": "DorskFR"
+            "example": "octocat"
           },
           "repo": {
             "type": "string",
@@ -1312,7 +1312,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           }
         },
@@ -1341,7 +1341,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "owner": {
@@ -1470,7 +1470,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "verdict": {
@@ -1497,7 +1497,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "path": {
@@ -1558,7 +1558,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "body": {
@@ -1655,7 +1655,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "verdict": {
@@ -1830,7 +1830,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "content": {
@@ -1924,7 +1924,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "name": {
@@ -1966,7 +1966,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "kind": {
@@ -2092,7 +2092,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "thread_ids": {
@@ -2129,7 +2129,7 @@
           "account": {
             "type": "string",
             "minLength": 1,
-            "example": "DorskFR",
+            "example": "octocat",
             "description": "GitHub account/login the record was synced for"
           },
           "read": {
@@ -2503,7 +2503,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "Filter to a single account; omit to span all synced accounts"
             },
             "required": false,
@@ -2558,7 +2558,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -2609,7 +2609,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "The account/login to list accessible GitHub repos for"
             },
             "required": true,
@@ -2816,7 +2816,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -2835,7 +2835,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "Filter to a single account; omit to span all synced accounts"
             },
             "required": false,
@@ -2890,7 +2890,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -2951,7 +2951,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3051,7 +3051,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3081,7 +3081,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -3132,7 +3132,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3212,7 +3212,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3292,7 +3292,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3322,7 +3322,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -3373,7 +3373,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3403,7 +3403,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -3432,7 +3432,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3513,7 +3513,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": false,
             "name": "account",
@@ -3544,7 +3544,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3612,7 +3612,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3642,7 +3642,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -3683,7 +3683,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3713,7 +3713,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -3752,7 +3752,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3832,7 +3832,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3912,7 +3912,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -3999,7 +3999,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4038,7 +4038,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -4089,7 +4089,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4189,7 +4189,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4219,7 +4219,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "account",
@@ -4270,7 +4270,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4350,7 +4350,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4430,7 +4430,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4510,7 +4510,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4540,7 +4540,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "GitHub account/login the record was synced for"
             },
             "required": true,
@@ -4593,7 +4593,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4623,7 +4623,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "GitHub account/login the record was synced for"
             },
             "required": true,
@@ -4676,7 +4676,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4695,7 +4695,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "GitHub account/login the record was synced for"
             },
             "required": true,
@@ -4748,7 +4748,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4828,7 +4828,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR"
+              "example": "octocat"
             },
             "required": true,
             "name": "owner",
@@ -4867,7 +4867,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "GitHub account/login the record was synced for"
             },
             "required": true,
@@ -4921,7 +4921,7 @@
             "schema": {
               "type": "string",
               "minLength": 1,
-              "example": "DorskFR",
+              "example": "octocat",
               "description": "Filter to a single account; omit to span all synced accounts"
             },
             "required": false,
@@ -4980,7 +4980,7 @@
           {
             "schema": {
               "type": "string",
-              "example": "DorskFR/cctui",
+              "example": "octocat/Hello-World",
               "description": "Filter by repository full name"
             },
             "required": false,
