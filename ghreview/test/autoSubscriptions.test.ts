@@ -250,6 +250,69 @@ guarded("auto-subscription handlers", () => {
     expect(drafts?.n).toBe(0);
   });
 
+  test("a pull GitHub no longer serves (404) is deleted and deactivated", async () => {
+    await upsertSubscription(db, "auto", "pull_request", "auto/repo#6", "repo");
+    await db.sql`
+      INSERT INTO documents (account, kind, key, etag, payload)
+      VALUES ('auto', 'pull_request', 'auto/repo#6', NULL, ${db.sql.json({ number: 6, state: "open" })})
+    `;
+    const octokit: OctokitRequest = {
+      request: async () => {
+        throw { status: 404, response: { headers: {} } };
+      },
+    };
+    const { ctx } = ctxFor(octokit);
+    await syncPull(ctx, {
+      id: "1",
+      account: "auto",
+      kind: "pull_request",
+      target: "auto/repo#6",
+      active: true,
+    });
+
+    expect(await findDocument(db, "pull_request", "auto/repo#6", { account: "auto" })).toBeNull();
+    const [row] = await db.sql<{ active: boolean }[]>`
+      SELECT active FROM subscriptions WHERE target = 'auto/repo#6'
+    `;
+    expect(row?.active).toBe(false);
+  });
+
+  test("a stored etag without a document does not hide the pull behind a 304", async () => {
+    await upsertSubscription(db, "auto", "pull_request", "auto/repo#9", "repo");
+    await db.sql`
+      INSERT INTO sync_state (account, kind, target, etag)
+      VALUES ('auto', 'pull_request', 'auto/repo#9', 'W/"old"')
+    `;
+    const sentEtags: (string | undefined)[] = [];
+    const octokit: OctokitRequest = {
+      request: async (route, params) => {
+        if (route === "GET /repos/{owner}/{repo}/pulls/{pull_number}") {
+          const headers = params?.headers as Record<string, string> | undefined;
+          sentEtags.push(headers?.["if-none-match"]);
+          if (headers?.["if-none-match"]) throw { status: 304, response: { headers: {} } };
+          return {
+            status: 200,
+            headers: { etag: 'W/"new"' },
+            data: { number: 9, state: "open", head: { sha: "h" } },
+          };
+        }
+        return { status: 200, headers: {}, data: [] };
+      },
+    };
+    const { ctx } = ctxFor(octokit);
+    await syncPull(ctx, {
+      id: "1",
+      account: "auto",
+      kind: "pull_request",
+      target: "auto/repo#9",
+      active: true,
+    });
+
+    expect(sentEtags).toEqual([undefined]);
+    const doc = await findDocument(db, "pull_request", "auto/repo#9", { account: "auto" });
+    expect(doc?.payload).toMatchObject({ number: 9, state: "open" });
+  });
+
   test("backfills missing files and commits when the parent pull is unchanged", async () => {
     await upsertSubscription(db, "auto", "pull_request", "auto/repo#8", "user");
     await db.sql`

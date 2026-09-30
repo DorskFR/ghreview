@@ -96,6 +96,8 @@ export function createApp(deps: AppDeps = {}) {
 
   app.notFound((c) => c.json({ error: { code: "not_found", message: "No such route" } }, 404));
   app.onError((err, c) => {
+    const github = githubFailure(err);
+    if (github) return c.json({ error: github.error }, github.status);
     const requestId = crypto.randomUUID();
     console.error(`ghreview: unhandled error [${requestId}]`, err);
     return c.json(
@@ -119,4 +121,28 @@ export function createApp(deps: AppDeps = {}) {
   });
 
   return app;
+}
+
+const GITHUB_PASSTHROUGH = new Set([403, 404, 410, 422]);
+
+function githubFailure(
+  err: unknown,
+): { status: 403 | 404 | 410 | 422 | 502; error: { code: string; message: string } } | null {
+  if (!(err instanceof Error) || err.name !== "HttpError") return null;
+  const status = (err as Error & { status?: unknown }).status;
+  if (typeof status !== "number" || status < 400) return null;
+  const detail = err.message.split(" - ")[0] || "request failed";
+  if (status === 404) {
+    return {
+      status,
+      error: {
+        code: "github_not_found",
+        message: `GitHub: ${detail}. The PR may be gone, or the account's token cannot see this repository.`,
+      },
+    };
+  }
+  return {
+    status: GITHUB_PASSTHROUGH.has(status) ? (status as 403 | 410 | 422) : 502,
+    error: { code: `github_${status}`, message: `GitHub ${status}: ${detail}` },
+  };
 }

@@ -89,6 +89,22 @@ guarded("reviewers endpoints", () => {
     await createGhAccount(db, { userId: "userA", login: "alpha", encryptedPat: "x" });
   });
 
+  test("a GitHub 404 surfaces as 404 with a readable message, not an internal error", async () => {
+    const octokit: OctokitRequest = {
+      request: async () => {
+        throw Object.assign(
+          new Error("Not Found - https://docs.github.com/rest/pulls/pulls#get-a-pull-request"),
+          { name: "HttpError", status: 404 },
+        );
+      },
+    };
+    const res = await createApp(deps(octokit)).request(`${URL}?account=alpha`, { headers: A });
+    expect(res.status).toBe(404);
+    const body = (await res.json()) as { error: { code: string; message: string } };
+    expect(body.error.code).toBe("github_not_found");
+    expect(body.error.message).toContain("Not Found");
+  });
+
   test("combines requested reviewers with reduced review states", async () => {
     const app = createApp(
       deps(
