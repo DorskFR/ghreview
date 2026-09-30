@@ -23,6 +23,7 @@ interface PluginManifest {
   backend: { upstreamSetting: string };
   styles?: string[];
   instanceSettings: { key: string; label: string; type: "string" | "url"; secret?: boolean }[];
+  settings?: { key: string; label: string; env: string; type: "string" | "url" }[];
   skills?: string[];
 }
 
@@ -74,7 +75,21 @@ const manifest: PluginManifest = {
   // the server refuses the manifest. The proxy signing secret is minted and
   // sealed server-side on install; it is never an instance setting.
   instanceSettings: [{ key: "backendUrl", label: "Backend URL", type: "url" }],
-  ...(hasSkill ? { skills: ["gh-review"] } : {}),
+  // A session has no cctui credential of its own, so the skill can only reach
+  // the plugin proxy with a token the user pastes here.
+  ...(hasSkill
+    ? {
+        settings: [
+          {
+            key: "apiToken",
+            label: "cctui API token (gh-review skill)",
+            env: "GHREVIEW_CCTUI_TOKEN",
+            type: "string" as const,
+          },
+        ],
+        skills: ["gh-review"],
+      }
+    : {}),
 };
 
 await writeFile(join(distDir, "plugin.json"), `${JSON.stringify(manifest, null, 2)}\n`);
