@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.log
+tmp/
+.env*
+!.env.example
+
+# Machine-local agent guidance and private notes — never committed.
+.claude/
+.notes/

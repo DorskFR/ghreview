@@ -1,0 +1,24 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.6/schema.json",
+  "files": {
+    "includes": [
+      "**/*.json",
+      "**/*.yaml",
+      "**/*.yml",
+      "**/*.md",
+      "!**/node_modules/**",
+      "!**/dist/**",
+      "!ghreview/openapi.json",
+      "!**/generated/**",
+      "!**/bun.lock"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "enabled": false
+  }
+}
