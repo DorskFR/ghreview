@@ -64,10 +64,16 @@ bun run build:plugin      # → dist/ghreview/{plugin.json,web/} and dist/ghrevi
 
 `scripts/build-plugin.ts` runs `vite.plugin.config.ts` (Svelte and Tsumikit stay
 external, resolved from the host's `/plugin-runtime/*`), writes `plugin.json`
-(`id: ghreview`, `page`, `backend.upstreamSetting: "backendUrl"`,
-`instanceSettings`, `styles`, `skills` when `skills/gh-review/SKILL.md` exists) and
+(`id: ghreview`, `name`/`page.title` "GitHub", `backend.upstreamSetting:
+"backendUrl"`, `instanceSettings`, `styles`, and `hostToken` + `skills` when
+`skills/gh-review/SKILL.md` exists) and
 tars the folder. `backend.upstreamSetting` must name a declared, non-secret `url`
-setting or the server refuses the manifest at install. It fails if the bundle or the stylesheet is missing, or if the
+setting or the server refuses the manifest at install.
+
+The plugin declares **no per-user settings**. The skill's cctui credential comes
+from `hostToken: { env: "GHREVIEW_CCTUI_TOKEN" }`: the host mints a `read`-scoped
+token when the user enables the plugin and revokes it when they disable it, so
+nobody is asked to paste a cctui token into cctui. It fails if the bundle or the stylesheet is missing, or if the
 archive exceeds the server's 5 MB limit.
 
 Component CSS is injected at mount, but the plain stylesheet imports (tokens,

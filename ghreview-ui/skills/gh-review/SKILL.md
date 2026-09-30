@@ -27,17 +27,21 @@ curl -sS -H "Authorization: Bearer $GHREVIEW_CCTUI_TOKEN" \
   "$CCTUI_WEB_ORIGIN/api/v1/plugins/ghreview/backend/v1/status"
 ```
 
-`CCTUI_WEB_ORIGIN` is always set in a cctui session. `GHREVIEW_CCTUI_TOKEN` comes from
-the plugin's per-user setting **cctui API token**, so:
+`CCTUI_WEB_ORIGIN` is always set in a cctui session. `GHREVIEW_CCTUI_TOKEN` is minted
+by cctui itself when the user enables this plugin — nobody pastes it anywhere — and is
+revoked when they disable it. So:
 
 - **If `GHREVIEW_CCTUI_TOKEN` is empty, stop and tell the user.** There is no
   session-scoped credential you can fall back on — the proxy takes the cctui session
-  cookie or a bearer token, and a session has neither by itself. Ask them to create a
-  cctui API token with `read` scope and paste it into Settings › Plugins › Review ›
-  *cctui API token*, then restart this session so the value reaches your environment.
+  cookie or a bearer token, and a session has neither by itself. An empty value means
+  the plugin is not enabled for this user, or the session predates them enabling it:
+  ask them to enable **GitHub** in Settings › Plugins and start a new session.
 - A `403` means the user has not enabled the plugin for themselves; `503` means no
   admin has set `backendUrl` or the backend has no proxy secret. Report which, do not
   retry in a loop.
+- An empty `items` from `GET /v1/accounts` means the user has added no GitHub account
+  yet, so nothing is synced to read. Tell them to add a GitHub token on the **GitHub**
+  page's Accounts tab rather than guessing at repo names.
 
 `?account=<login>` selects which synced GitHub account to act as when the user has more
 than one; `GET /v1/accounts` lists them and most endpoints require it.
