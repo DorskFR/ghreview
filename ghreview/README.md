@@ -19,7 +19,7 @@ serve envelopes from the store; when
   Every record is an envelope:
 
   ```jsonc
-  { "account": "DorskFR", "kind": "pull_request", "synced_at": "…", "etag": "…",
+  { "account": "octocat", "kind": "pull_request", "synced_at": "…", "etag": "…",
     "payload": { /* GitHub-shaped JSONB, unknown at the envelope level */ } }
   ```
 
@@ -163,7 +163,7 @@ absent until first touched, so the inbox defaults everything to `false`.
   plus a `state` object. Filters (all optional, combinable):
   - `reason` — GitHub reason (`review_requested`, `mention`, `ci_activity`); the
     aliases `review-requested` and `ci` are accepted.
-  - `repo` — repository `full_name` (e.g. `DorskFR/cctui`).
+  - `repo` — repository `full_name` (e.g. `octocat/Hello-World`).
   - `unread` — `true` shows only threads GitHub marks unread that are not locally
     read; `false` shows the read ones.
   - `undone` — `true` hides done threads; `false` shows only done ones.

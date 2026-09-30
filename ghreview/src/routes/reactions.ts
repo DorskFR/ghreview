@@ -6,7 +6,7 @@ import { type ReactionSummary, toggleReaction } from "../github/reactions.ts";
 import { ErrorSchema, ReactionSummarySchema, ReactionToggleSchema } from "../schemas.ts";
 
 const RepoParams = z.object({
-  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "DorskFR" }),
+  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "octocat" }),
   repo: z.string().openapi({ param: { name: "repo", in: "path" }, example: "cctui" }),
 });
 

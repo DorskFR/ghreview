@@ -27,7 +27,7 @@ import {
 } from "../schemas.ts";
 
 const PullParams = z.object({
-  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "DorskFR" }),
+  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "octocat" }),
   repo: z.string().openapi({ param: { name: "repo", in: "path" }, example: "cctui" }),
   number: z.coerce
     .number()
@@ -44,7 +44,7 @@ const AccountQuery = z.object({
   account: z
     .string()
     .min(1)
-    .openapi({ param: { name: "account", in: "query" }, example: "DorskFR" }),
+    .openapi({ param: { name: "account", in: "query" }, example: "octocat" }),
 });
 
 const EVENT: Record<ReviewVerdict, string> = {

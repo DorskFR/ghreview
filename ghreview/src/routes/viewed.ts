@@ -13,7 +13,7 @@ import { pushViewedFile, resolvePullNodeId } from "../sync/viewedPush.ts";
 import { digestPullFiles } from "../sync/viewedSync.ts";
 
 const PullParams = z.object({
-  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "DorskFR" }),
+  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "octocat" }),
   repo: z.string().openapi({ param: { name: "repo", in: "path" }, example: "cctui" }),
   number: z.coerce
     .number()
@@ -33,7 +33,7 @@ const getViewed = createRoute({
       account: z
         .string()
         .min(1)
-        .openapi({ param: { name: "account", in: "query" }, example: "DorskFR" }),
+        .openapi({ param: { name: "account", in: "query" }, example: "octocat" }),
     }),
   },
   responses: {

@@ -9,7 +9,7 @@ import type { Account } from "../github/account.ts";
 import { ErrorSchema, MergePullSchema, MergeResultSchema } from "../schemas.ts";
 
 const PullParams = z.object({
-  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "DorskFR" }),
+  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "octocat" }),
   repo: z.string().openapi({ param: { name: "repo", in: "path" }, example: "cctui" }),
   number: z.coerce
     .number()

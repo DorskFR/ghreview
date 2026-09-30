@@ -17,7 +17,7 @@ const GITHUB_REPOS_MAX_PAGES = 20;
 
 const GithubRepoSchema = z
   .object({
-    full_name: z.string().openapi({ example: "DorskFR/cctui" }),
+    full_name: z.string().openapi({ example: "octocat/Hello-World" }),
     private: z.boolean().openapi({ example: false }),
     permissions: z
       .object({
@@ -101,7 +101,7 @@ const listGithubRepos = createRoute({
 });
 
 const RepoParams = z.object({
-  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "DorskFR" }),
+  owner: z.string().openapi({ param: { name: "owner", in: "path" }, example: "octocat" }),
   repo: z.string().openapi({ param: { name: "repo", in: "path" }, example: "cctui" }),
 });
 

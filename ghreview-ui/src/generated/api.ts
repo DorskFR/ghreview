@@ -2506,7 +2506,7 @@ export interface components {
             data: {
                 /**
                  * @description GitHub account/login the record was synced for
-                 * @example DorskFR
+                 * @example octocat
                  */
                 account: string;
                 owner: string;
@@ -2523,7 +2523,7 @@ export interface components {
             data: {
                 /**
                  * @description GitHub account/login the record was synced for
-                 * @example DorskFR
+                 * @example octocat
                  */
                 account: string;
                 owner: string;
@@ -2540,7 +2540,7 @@ export interface components {
             data: {
                 /**
                  * @description GitHub account/login the record was synced for
-                 * @example DorskFR
+                 * @example octocat
                  */
                 account: string;
                 id: string;
@@ -2555,7 +2555,7 @@ export interface components {
             data: {
                 /**
                  * @description GitHub account/login the record was synced for
-                 * @example DorskFR
+                 * @example octocat
                  */
                 account: string;
                 id: string;
@@ -2570,7 +2570,7 @@ export interface components {
             data: {
                 /**
                  * @description GitHub account/login the record was synced for
-                 * @example DorskFR
+                 * @example octocat
                  */
                 account: string;
                 /** @enum {string} */
@@ -2608,7 +2608,7 @@ export interface components {
         SyncResult: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -2633,7 +2633,7 @@ export interface components {
         SyncRequest: {
             /**
              * @description The caller's GitHub login to force-sync; omit when the caller has exactly one account
-             * @example DorskFR
+             * @example octocat
              */
             account?: string;
         };
@@ -2644,7 +2644,7 @@ export interface components {
             id: string;
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             login: string;
             poll_interval_ms: number | null;
@@ -2680,7 +2680,7 @@ export interface components {
         RepoEnvelope: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -2706,7 +2706,7 @@ export interface components {
             items: components["schemas"]["GithubRepo"][];
         };
         GithubRepo: {
-            /** @example DorskFR/cctui */
+            /** @example octocat/Hello-World */
             full_name: string;
             /** @example false */
             private: boolean;
@@ -2731,7 +2731,7 @@ export interface components {
             id: string;
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -2754,12 +2754,12 @@ export interface components {
             kind: "repo" | "pull_request" | "notification";
             /**
              * @description For pull_request: a github.com PR URL or `owner/repo#number`. For repo: `owner/repo`.
-             * @example https://github.com/DorskFR/cctui/pull/42
+             * @example https://github.com/octocat/Hello-World/pull/42
              */
             target: string;
             /**
              * @description The caller's GitHub login to own the subscription; omit when the caller has exactly one account
-             * @example DorskFR
+             * @example octocat
              */
             account?: string;
         };
@@ -2774,7 +2774,7 @@ export interface components {
         PullRequestEnvelope: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -2807,7 +2807,7 @@ export interface components {
         MergePull: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -2846,7 +2846,7 @@ export interface components {
         ReRequestReviewers: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             reviewers: string[];
@@ -2854,7 +2854,7 @@ export interface components {
         RequestReviewers: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -2949,7 +2949,7 @@ export interface components {
         ViewedStateSet: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /** @description File paths to mark; a folder op sends every file beneath it */
@@ -2961,7 +2961,7 @@ export interface components {
             items: components["schemas"]["SnoozedPull"][];
         };
         SnoozedPull: components["schemas"]["PullRequestEnvelope"] & {
-            /** @example DorskFR */
+            /** @example octocat */
             owner: string;
             /** @example cctui */
             repo: string;
@@ -2977,10 +2977,10 @@ export interface components {
         SnoozeResult: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
-            /** @example DorskFR */
+            /** @example octocat */
             owner: string;
             /** @example cctui */
             repo: string;
@@ -2992,7 +2992,7 @@ export interface components {
         SnoozeRequest: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
         };
@@ -3003,7 +3003,7 @@ export interface components {
             id: string;
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             owner: string;
@@ -3052,7 +3052,7 @@ export interface components {
         ReviewDraftMeta: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -3066,7 +3066,7 @@ export interface components {
         ReviewDraftCommentCreate: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             path: string;
@@ -3092,7 +3092,7 @@ export interface components {
         ReviewDraftCommentEdit: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             body?: string;
@@ -3127,7 +3127,7 @@ export interface components {
         ReviewPublish: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -3173,7 +3173,7 @@ export interface components {
         ReactionToggle: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -3207,7 +3207,7 @@ export interface components {
         LabelMutate: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -3227,7 +3227,7 @@ export interface components {
         NotificationInboxItem: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /**
@@ -3276,7 +3276,7 @@ export interface components {
         NotificationBulkState: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /** @description Notification thread ids to mutate */
@@ -3291,7 +3291,7 @@ export interface components {
         NotificationSingleState: {
             /**
              * @description GitHub account/login the record was synced for
-             * @example DorskFR
+             * @example octocat
              */
             account: string;
             /** @description Set read; true pushes to GitHub */
