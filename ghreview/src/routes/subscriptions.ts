@@ -3,6 +3,7 @@ import { getUserId } from "../auth/middleware.ts";
 import { listGhAccounts } from "../db/accounts.ts";
 import {
   deactivateOwnedSubscription,
+  deactivateRepoPullSubscriptions,
   getOwnedSubscriptionById,
   listSubscriptionsForUser,
   type SubscriptionKind,
@@ -213,6 +214,9 @@ export function registerSubscriptions(app: OpenAPIHono, deps: AppDeps = {}) {
     const row = await deactivateOwnedSubscription(deps.db, uid, id);
     if (!row) {
       return c.json({ error: { code: "not_found", message: `Subscription ${id} not found` } }, 404);
+    }
+    if (row.kind === "repo" && row.target) {
+      await deactivateRepoPullSubscriptions(deps.db, row.account, row.target);
     }
     return c.body(null, 204);
   });

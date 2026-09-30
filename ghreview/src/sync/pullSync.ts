@@ -19,20 +19,24 @@ export async function syncPull(ctx: SyncContext, sub: Subscription): Promise<Syn
   const parsed = sub.target ? parsePullTarget(sub.target) : null;
   if (!parsed) return skipped();
   const { owner, repo, number } = parsed;
-  const state = await getSyncState(ctx.db, sub.account, "pull_request", sub.target);
+  const key = `${owner}/${repo}#${number}`;
+  const existing = await getDocument(ctx.db, sub.account, "pull_request", key);
+  const state = existing
+    ? await getSyncState(ctx.db, sub.account, "pull_request", sub.target)
+    : null;
   const res = await conditionalRequest(
     ctx.account.octokit,
     "GET /repos/{owner}/{repo}/pulls/{pull_number}",
     { owner, repo, pull_number: number },
     { etag: state?.etag ?? null },
   );
-  const key = `${owner}/${repo}#${number}`;
-  const existing = await getDocument(ctx.db, sub.account, "pull_request", key);
   const existingPayload =
     existing?.payload && typeof existing.payload === "object"
       ? (existing.payload as Record<string, unknown>)
       : null;
-  if (res.status === 200 && res.data) {
+  if (res.status === 404 || res.status === 410) {
+    await removePull(ctx.db, sub.account, owner, repo, number);
+  } else if (res.status === 200 && res.data) {
     const pr = res.data as { state?: string; merged?: boolean; merged_at?: string | null };
     if (pr.state === "closed" || pr.merged === true || pr.merged_at != null) {
       await removePull(ctx.db, sub.account, owner, repo, number);

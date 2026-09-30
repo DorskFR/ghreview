@@ -56,6 +56,19 @@ export async function deactivateSubscription(
   `;
 }
 
+export async function deactivateRepoPullSubscriptions(
+  db: DbHandle,
+  account: string,
+  repoTarget: string,
+): Promise<void> {
+  await db.sql`
+    UPDATE subscriptions
+    SET active = false
+    WHERE account = ${account} AND kind = 'pull_request' AND source = 'repo'
+      AND split_part(target, '#', 1) = ${repoTarget}
+  `;
+}
+
 export async function listActiveSubscriptions(db: DbHandle): Promise<Subscription[]> {
   return db.sql<Subscription[]>`
     SELECT id::text, account, kind, target, active

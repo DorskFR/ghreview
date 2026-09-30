@@ -181,6 +181,43 @@ guarded("subscription management", () => {
     expect(((await after.json()) as { items: unknown[] }).items.length).toBe(0);
   });
 
+  test("unsubscribing a repo deactivates only the pulls it discovered", async () => {
+    await upsertSubscription(db, "alpha", "repo", "alpha/repo");
+    await upsertSubscription(db, "alpha", "pull_request", "alpha/repo#1", "repo");
+    await upsertSubscription(db, "alpha", "pull_request", "alpha/repo#2", "notification");
+    await upsertSubscription(db, "alpha", "pull_request", "alpha/repo-two#3", "repo");
+    const [repoSub] = await db.sql<{ id: string }[]>`
+      SELECT id::text FROM subscriptions WHERE kind = 'repo' AND target = 'alpha/repo'
+    `;
+
+    const res = await createApp(deps()).request(`/v1/subscriptions/${repoSub?.id}`, {
+      method: "DELETE",
+      headers: A,
+    });
+    expect(res.status).toBe(204);
+
+    const active = await listActiveSubscriptionsForAccount(db, "alpha");
+    expect(active.map((s) => s.target).sort()).toEqual(["alpha/repo#2", "alpha/repo-two#3"]);
+  });
+
+  test("migration 014 deactivates repo-sourced pulls whose repo subscription is gone", async () => {
+    await upsertSubscription(db, "alpha", "repo", "alpha/kept");
+    await upsertSubscription(db, "alpha", "pull_request", "alpha/kept#1", "repo");
+    await upsertSubscription(db, "alpha", "pull_request", "alpha/gone#2", "repo");
+    await upsertSubscription(db, "alpha", "pull_request", "alpha/gone#3", "notification");
+
+    await db.sql.file(
+      new URL("../migrations/014_deactivate_orphaned_repo_pulls.sql", import.meta.url).pathname,
+    );
+
+    const active = await listActiveSubscriptionsForAccount(db, "alpha");
+    expect(active.map((s) => s.target).sort()).toEqual([
+      "alpha/gone#3",
+      "alpha/kept",
+      "alpha/kept#1",
+    ]);
+  });
+
   test("/v1/status requires auth and scopes accounts to the caller", async () => {
     const app = createApp({
       db,
