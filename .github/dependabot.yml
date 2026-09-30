@@ -35,6 +35,10 @@ updates:
       # bumped with host-runtime.json, not by dependabot.
       - dependency-name: svelte
       - dependency-name: "@dorsk/tsumikit"
+      # svelte-check refuses typescript 7 unless 6 and 7 are both installed
+      # behind an npm alias and driven with --tsgo
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
