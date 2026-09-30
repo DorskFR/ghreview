@@ -51,12 +51,17 @@ await mkdir(distDir, { recursive: true });
 
 await run(["bunx", "vite", "build", "--config", "vite.plugin.config.ts"]);
 
-const bundle = join(distDir, "web", "index.js");
+// `web` must name the ES module file itself — the installer asks whether the
+// path is a *file*, and a folder ("web") is refused with "`web` does not exist".
+const WEB_MODULE = "web/index.js";
+const WEB_STYLESHEET = "web/index.css";
+
+const bundle = join(distDir, WEB_MODULE);
 if (!(await exists(bundle))) throw new Error(`vite produced no bundle at ${bundle}`);
 
 // The page is unreadable without the token/diff/markdown sheets, so a build that
 // lost them is a failure rather than a silently unstyled install.
-const stylesheet = join(distDir, "web", "index.css");
+const stylesheet = join(distDir, WEB_STYLESHEET);
 if (!(await exists(stylesheet))) throw new Error(`vite produced no stylesheet at ${stylesheet}`);
 
 const hasSkill = await exists(join(skillsDir, "gh-review", "SKILL.md"));
@@ -73,10 +78,10 @@ const manifest: PluginManifest = {
   version,
   cctuiApi: 1,
   icon: "pull-request",
-  web: "web",
+  web: WEB_MODULE,
   page: { title: "Review", icon: "pull-request" },
   backend: { upstreamSetting: "backendUrl" },
-  styles: ["web/index.css"],
+  styles: [WEB_STYLESHEET],
   // `backend.upstreamSetting` must name a declared, non-secret `url` setting or
   // the server refuses the manifest. The proxy signing secret is minted and
   // sealed server-side on install; it is never an instance setting.

@@ -106,8 +106,12 @@ cd ghreview-ui && bun run build:plugin
 # → dist/ghreview/{plugin.json,web/,skills/} and dist/ghreview-<ver>.tgz
 ```
 
-The archive's top folder is the plugin id, which is what the installer accepts
-(`scripts/check-plugin-archive.sh` asserts it, with its own test cases).
+The archive's top folder is the plugin id and `web` names the module file
+itself — both are what the installer accepts.
+`scripts/check-plugin-archive.sh` asserts the layout and then validates
+`plugin.json` against the installer's own rules
+(`scripts/plugin-manifest.ts`, mirrored from cctui's `validate_manifest`), with a
+test case per rule.
 
 The version stamped into `plugin.json` and the archive name comes from
 `GHREVIEW_VERSION`, falling back to `package.json`; the release workflow sets it

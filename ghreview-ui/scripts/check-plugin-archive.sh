@@ -18,7 +18,16 @@ members="$(tar tzf "$tgz")"
 roots="$(printf '%s\n' "$members" | sed 's|^\./||' | cut -d/ -f1 | grep -v '^$' | sort -u)"
 count="$(printf '%s\n' "$roots" | wc -l | tr -d ' ')"
 
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+tar xzf "$tgz" -C "$tmp"
+
+# Files at the archive root: the installer takes the manifest id as the folder,
+# so only the manifest rules are left to check.
 if printf '%s\n' "$members" | sed 's|^\./||' | grep -qx 'plugin.json'; then
+  id="$(node -p "require('$tmp/plugin.json').id")"
+  bun "$here/plugin-manifest.ts" "$tmp" "$id"
   echo "OK: plugin.json sits at the archive root"
   exit 0
 fi
@@ -29,17 +38,14 @@ folder="$roots"
 printf '%s\n' "$members" | sed 's|^\./||' | grep -qx "$folder/plugin.json" ||
   fail "$tgz has no $folder/plugin.json"
 
-tmp="$(mktemp -d)"
-trap 'rm -rf "$tmp"' EXIT
-# Extract everything: a `./`-prefixed archive has no member literally named
-# "$folder/plugin.json" to single out.
-tar xzf "$tgz" -C "$tmp"
 id="$(node -p "require('$tmp/$folder/plugin.json').id")"
 
 [ "$id" = "$folder" ] ||
   fail "plugin id \`$id\` does not match its folder \`$folder\` — the installer refuses this archive"
 
-printf '%s\n' "$members" | sed 's|^\./||' | grep -qx "$folder/web/index.js" ||
-  fail "$tgz has no $folder/web/index.js"
+# Everything else the installer checks about the manifest — `web` naming an
+# existing module *file*, styles, skills, page, settings — lives in the
+# validator, run against the unpacked folder.
+bun "$here/plugin-manifest.ts" "$tmp/$folder" "$folder"
 
 echo "OK: $tgz unpacks to $folder/ matching plugin id $id"
