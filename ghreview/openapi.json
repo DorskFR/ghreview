@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "cctui gh-review API",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Versioned HTTP+SSE contract for the GitHub review center. Relays GitHub-shaped JSONB payloads verbatim inside typed envelopes."
   },
   "servers": [

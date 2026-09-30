@@ -13,6 +13,9 @@ const RUNTIME_PATHS: Record<string, string> = {
 
 export default defineConfig({
   plugins: [svelte({ compilerOptions: { css: "injected" }, emitCss: false })],
+  // Library mode leaves `process.env.NODE_ENV` for a bundler that never runs:
+  // the host loads this file straight into the browser.
+  define: { "process.env.NODE_ENV": JSON.stringify("production") },
   resolve: {
     alias: {
       $lib: new URL("./src/lib", import.meta.url).pathname,
