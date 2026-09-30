@@ -9,6 +9,7 @@
   import { EMBED_KEY, type EmbedContext } from "../embed/context";
   import { router } from "../router/router.svelte";
   import { currentTheme, setTheme, type Theme, THEME_LABELS, THEMES } from "../theme/theme";
+  import AccountGate from "./AccountGate.svelte";
   import GithubAccounts from "./GithubAccounts.svelte";
   import Inbox from "./Inbox.svelte";
   import MasterDetail from "./MasterDetail.svelte";
@@ -86,14 +87,18 @@
     {/if}
   </header>
 
-  {#if route.name === "inbox"}
-    <main class="content"><Inbox /></main>
-  {:else if route.name === "subscriptions"}
-    <main class="content"><Subscriptions /></main>
-  {:else if route.name === "accounts"}
+  {#if route.name === "accounts"}
     <main class="content"><GithubAccounts /></main>
   {:else}
-    <MasterDetail />
+    <AccountGate>
+      {#if route.name === "inbox"}
+        <main class="content"><Inbox /></main>
+      {:else if route.name === "subscriptions"}
+        <main class="content"><Subscriptions /></main>
+      {:else}
+        <MasterDetail />
+      {/if}
+    </AccountGate>
   {/if}
 </QueryClientProvider>
 

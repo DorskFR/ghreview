@@ -33,17 +33,17 @@ manifest() {
   cat <<JSON
 {
   "id": "ghreview",
-  "name": "Review",
+  "name": "GitHub",
   "description": "d",
   "version": "0.0.0",
   "cctuiApi": 1,
   "icon": "pull-request",
   "web": "web/index.js",
-  "page": { "title": "Review" },
+  "page": { "title": "GitHub" },
   "styles": ["web/index.css"],
   "instanceSettings": [{ "key": "backendUrl", "label": "Backend URL", "type": "url" }],
   "backend": { "upstreamSetting": "backendUrl" },
-  "settings": [{ "key": "apiToken", "label": "Token", "env": "GHREVIEW_CCTUI_TOKEN", "type": "string" }],
+  "hostToken": { "env": "GHREVIEW_CCTUI_TOKEN" },
   "skills": ["gh-review"]
   ${1:+, $1}
 }
@@ -137,6 +137,10 @@ expect 1 "a reserved settings env fails" \
   bash "$script" "$(make_tgz badenv ghreview "$(manifest_with settings '[{"key":"apiToken","label":"T","env":"CCTUI_TOKEN","type":"string"}]')")"
 expect 1 "a settings type other than string fails" \
   bash "$script" "$(make_tgz badsettingtype ghreview "$(manifest_with settings '[{"key":"apiToken","label":"T","env":"GHREVIEW_T","type":"url"}]')")"
+expect 1 "a reserved hostToken env fails" \
+  bash "$script" "$(make_tgz badhosttokenenv ghreview "$(manifest_with hostToken '{"env":"CCTUI_TOKEN"}')")"
+expect 1 "a hostToken env colliding with a settings env fails" \
+  bash "$script" "$(make_tgz hosttokencollide ghreview "$(manifest_with settings '[{"key":"tok","label":"T","env":"GHREVIEW_CCTUI_TOKEN","type":"string"}]')")"
 expect 1 "duplicate instanceSettings keys fail" \
   bash "$script" "$(make_tgz dupinstance ghreview "$(manifest_with instanceSettings '[{"key":"backendUrl","label":"A","type":"url"},{"key":"backendUrl","label":"B","type":"url"}]')")"
 expect 1 "a backend upstreamSetting that is not declared fails" \

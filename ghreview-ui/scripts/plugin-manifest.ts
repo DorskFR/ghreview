@@ -71,6 +71,7 @@ interface Manifest {
   settings?: unknown;
   instanceSettings?: unknown;
   backend?: { upstreamSetting?: unknown } | null;
+  hostToken?: { env?: unknown } | null;
 }
 
 function asArray(value: unknown): unknown[] {
@@ -149,6 +150,15 @@ export function validateManifest(
     } else if (keys.has(key) || envs.has(String(s.env))) badSetting("duplicate key or env");
     keys.add(key);
     envs.add(String(s.env));
+  }
+
+  if (manifest.hostToken) {
+    const env = record(manifest.hostToken).env;
+    if (!validPluginEnvName(env)) {
+      bad("hostToken is invalid: env must match ^[A-Z][A-Z0-9_]{0,63}$ and not be reserved");
+    } else if (envs.has(String(env))) {
+      bad("hostToken is invalid: env collides with a settings env");
+    }
   }
 
   const instance = asArray(manifest.instanceSettings);

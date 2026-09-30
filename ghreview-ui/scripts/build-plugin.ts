@@ -30,6 +30,7 @@ interface PluginManifest {
   styles?: string[];
   instanceSettings: { key: string; label: string; type: "string" | "url"; secret?: boolean }[];
   settings?: { key: string; label: string; env: string; type: "string" | "url" }[];
+  hostToken?: { env: string };
   skills?: string[];
 }
 
@@ -72,34 +73,25 @@ if (hasSkill) {
 
 const manifest: PluginManifest = {
   id: PLUGIN_ID,
-  name: "Review",
+  name: "GitHub",
   description:
     "GitHub review centre: pull requests, diffs, inline review drafts and the notification inbox, served by a separately deployed ghreview backend.",
   version,
   cctuiApi: 1,
   icon: "pull-request",
   web: WEB_MODULE,
-  page: { title: "Review", icon: "pull-request" },
+  page: { title: "GitHub", icon: "pull-request" },
   backend: { upstreamSetting: "backendUrl" },
   styles: [WEB_STYLESHEET],
   // `backend.upstreamSetting` must name a declared, non-secret `url` setting or
   // the server refuses the manifest. The proxy signing secret is minted and
   // sealed server-side on install; it is never an instance setting.
   instanceSettings: [{ key: "backendUrl", label: "Backend URL", type: "url" }],
-  // A session has no cctui credential of its own, so the skill can only reach
-  // the plugin proxy with a token the user pastes here.
+  // A session has no cctui credential of its own. `hostToken` has the host mint
+  // the user one on enable and revoke it on disable, so nobody is asked to paste
+  // a cctui token into cctui.
   ...(hasSkill
-    ? {
-        settings: [
-          {
-            key: "apiToken",
-            label: "cctui API token (gh-review skill)",
-            env: "GHREVIEW_CCTUI_TOKEN",
-            type: "string" as const,
-          },
-        ],
-        skills: ["gh-review"],
-      }
+    ? { hostToken: { env: "GHREVIEW_CCTUI_TOKEN" }, skills: ["gh-review"] }
     : {}),
 };
 
