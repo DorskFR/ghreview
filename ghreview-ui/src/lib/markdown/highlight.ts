@@ -1,6 +1,4 @@
 // biome-ignore-all lint/suspicious/noControlCharactersInRegex: ANSI/C0 stripping requires matching control bytes
-// Also imported by webui through the `$ghreview` alias; its ambient types live
-// in webui/src/ghreview-embed.d.ts and must follow export changes.
 
 import hljs from "highlight.js/lib/core";
 import bashLang from "highlight.js/lib/languages/bash";

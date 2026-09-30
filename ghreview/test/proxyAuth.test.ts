@@ -29,7 +29,7 @@ interface Vector {
 
 const vectors: Vector[] = (
   (await Bun.file(
-    new URL("../../docs/plugin-proxy-signature-vectors.json", import.meta.url),
+    new URL("../docs/plugin-proxy-signature-vectors.json", import.meta.url),
   ).json()) as { vectors: Vector[] }
 ).vectors;
 

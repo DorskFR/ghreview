@@ -1,8 +1,8 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vite";
 
-// Duplicates webui/plugin-sdk/vite.ts on purpose: until the SDK is published,
-// importing it would couple this build to the cctui checkout's layout.
+// Mirrors the host's own plugin-sdk vite config: until @dorsk/cctui-plugin-sdk is
+// published, these externals are declared here rather than imported.
 const RUNTIME_PATHS: Record<string, string> = {
   svelte: "/plugin-runtime/svelte.js",
   "svelte/internal/client": "/plugin-runtime/svelte-internal-client.js",

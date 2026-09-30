@@ -1,0 +1,17 @@
+{
+  "comment": [
+    "Versions of the shared runtime the cctui host injects at /plugin-runtime/*. Svelte and",
+    "@dorsk/tsumikit are external in the plugin bundle, so equality with the host — not semver",
+    "compatibility — is the requirement, and scripts/check-host-deps.sh enforces it against this",
+    "file. Bump both here and in package.json when the host upgrades. Once",
+    "@dorsk/cctui-plugin-sdk is published, read its peer ranges instead of pinning them here.",
+    "Shaped like a package.json so the check reads host and plugin the same way."
+  ],
+  "host": "cctui",
+  "dependencies": {
+    "@dorsk/tsumikit": "^0.64.0"
+  },
+  "devDependencies": {
+    "svelte": "^5.25.0"
+  }
+}

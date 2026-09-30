@@ -1,15 +1,14 @@
 # ghreview-ui
 
-Frontend for the cctui GitHub review center (epic **CCT-600**). Foundation
-delivered in **CCT-605**: a tabbed, keyboard-first PR review UI that opens
-instantly from the warm `/v1` backend (`ghreview/`) — **zero GitHub round trips
-in the open path**.
+Frontend for the ghreview GitHub review center: a tabbed, keyboard-first PR
+review UI that opens instantly from the warm `/v1` backend (`../ghreview`) —
+**zero GitHub round trips in the open path**.
 
-It is a **Svelte 5 + Vite** single-page app that runs **standalone** against the
-backend and **embeds** into `cctui-ui` (the connector, **CCT-610**). It shares
-webui's tooling (Svelte 5 runes, `@tanstack/svelte-query`, biome, vitest) and owns
+It is a **Svelte 5 + Vite** single-page app that ships as a cctui plugin and also
+runs **standalone** against the backend for development. It shares the cctui
+host's tooling (Svelte 5 runes, `@tanstack/svelte-query`, biome, vitest) and owns
 its own minimal CSS with design tokens (every color is a CSS custom property in
-`src/tokens.css`; **CCT-607** formalized four themes and syntax palettes).
+`src/tokens.css`).
 
 ## Three ways this app runs
 
@@ -55,7 +54,7 @@ secret is **not** a setting: the server mints it on install (any manifest with a
    `PUT /api/v1/admin/plugins/ghreview/settings` with
    `{"values":{"backendUrl":"https://…"}}`, or the form in Settings › Plugins.
 - **GitHub accounts** — PAT add/remove lives in the app now
-  (`src/lib/components/GithubAccounts.svelte`, route `/accounts`), not in webui.
+  (`src/lib/components/GithubAccounts.svelte`, route `/accounts`), not in the host.
 
 ### Packaging
 
@@ -168,7 +167,7 @@ bun run test        # vitest only
   language map) behind a memoizing per-line cache. `components/DiffView.svelte` is
   the single renderer: virtualized DOM rows, unified or split.
 - **Viewed state** (`src/lib/diff/tree.ts`, `collapse.ts`, `api/viewed.ts`) —
-  **CCT-609**. `buildFileTree()` turns the flat file list into a nested,
+  `buildFileTree()` turns the flat file list into a nested,
   single-child-compressed directory tree; `FileTree.svelte` renders per-file and
   per-folder checkboxes with `n/m` progress (a folder toggle cascades to every file
   beneath). Marking a file viewed collapses it via `collapseViewedFiles()`, a pure
@@ -180,7 +179,7 @@ bun run test        # vitest only
   `viewed.ts` are pure; `tree.ts` and `viewed.ts` have their own test files, and
   `collapse.ts` is covered by the `collapseViewedFiles` cases in `tree.test.ts`.
 
-## Themes (CCT-607)
+## Themes
 
 Four first-class themes, selected by a `data-theme` attribute — on `<html>`
 standalone, or on the `.ghreview-embed` container when embedded (so the host's
@@ -249,15 +248,6 @@ Requirement #1 is instant opens. How it's met:
 No frame-rate number is claimed here: nothing in this repo measures paint or frame
 time, and jsdom/happy-dom cannot. Treat the tests above as algorithmic-cost
 tripwires and profile in a real browser if you need frame numbers.
-
-## Landed since the foundation
-
-- **CCT-607** — four themes + syntax palettes.
-- **CCT-609** — hierarchical, server-synced viewed state.
-- **CCT-610** — embeds into cctui-ui with injected cctui bearer auth (see
-  _Standalone vs embedded_).
-- Per-line syntax highlighting, side-by-side (split) mode, inline comment drafts
-  and review submit/publish.
 
 ## Deferred
 
