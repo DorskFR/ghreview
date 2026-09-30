@@ -12,6 +12,6 @@
     "@dorsk/tsumikit": "^0.64.0"
   },
   "devDependencies": {
-    "svelte": "^5.25.0"
+    "svelte": "^5.57.1"
   }
 }
