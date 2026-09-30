@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist/plugin/web",
+    outDir: "dist/ghreview/web",
     emptyOutDir: true,
     minify: true,
     // Component styles are injected at mount, but the plain `import "*.css"`

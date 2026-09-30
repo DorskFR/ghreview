@@ -88,10 +88,12 @@ jobs:
         env:
           GHREVIEW_VERSION: ${{ needs.meta.outputs.version }}
         run: |
+          bash scripts/check-plugin-archive.test.sh
           bun run build:plugin
           tgz="dist/ghreview-${GHREVIEW_VERSION}.tgz"
           [ -f "$tgz" ] || { echo "::error::$tgz was not produced"; exit 1; }
-          manifest_version="$(node -p "require('./dist/plugin/plugin.json').version")"
+          bash scripts/check-plugin-archive.sh "$tgz"
+          manifest_version="$(node -p "require('./dist/ghreview/plugin.json').version")"
           [ "$manifest_version" = "$GHREVIEW_VERSION" ] || {
             echo "::error::plugin.json says $manifest_version, expected $GHREVIEW_VERSION"; exit 1; }
           sha256="$(sha256sum "$tgz" | cut -d' ' -f1)"

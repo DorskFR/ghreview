@@ -59,7 +59,7 @@ secret is **not** a setting: the server mints it on install (any manifest with a
 ### Packaging
 
 ```sh
-bun run build:plugin      # → dist/plugin/{plugin.json,web/} and dist/ghreview-<ver>.tgz
+bun run build:plugin      # → dist/ghreview/{plugin.json,web/} and dist/ghreview-<ver>.tgz
 ```
 
 `scripts/build-plugin.ts` runs `vite.plugin.config.ts` (Svelte and Tsumikit stay

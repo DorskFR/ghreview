@@ -137,6 +137,12 @@ jobs:
         working-directory: ghreview-ui
         run: bun run build
 
+      # build:plugin runs check-plugin-archive.sh on its own output; the .test.sh
+      # proves that check still rejects the layouts the installer refuses.
+      - name: Archive layout check guards its own rules
+        working-directory: ghreview-ui
+        run: bash scripts/check-plugin-archive.test.sh
+
       - name: Build the plugin archive
         working-directory: ghreview-ui
         run: bun run build:plugin

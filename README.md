@@ -103,8 +103,11 @@ CI fails if the committed output does not match the generators.
 
 ```sh
 cd ghreview-ui && bun run build:plugin
-# → dist/plugin/{plugin.json,web/,skills/} and dist/ghreview-<ver>.tgz
+# → dist/ghreview/{plugin.json,web/,skills/} and dist/ghreview-<ver>.tgz
 ```
+
+The archive's top folder is the plugin id, which is what the installer accepts
+(`scripts/check-plugin-archive.sh` asserts it, with its own test cases).
 
 The version stamped into `plugin.json` and the archive name comes from
 `GHREVIEW_VERSION`, falling back to `package.json`; the release workflow sets it

@@ -4,7 +4,13 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const distDir = join(root, "dist", "plugin");
+
+// The installer accepts an archive whose files sit at the root or under a single
+// folder named exactly like the manifest id — anything else is refused at
+// install, so the id names the folder, the tar member and the manifest alike.
+// Keep vite.plugin.config.ts's outDir in step.
+const PLUGIN_ID = "ghreview";
+const distDir = join(root, "dist", PLUGIN_ID);
 const skillsDir = join(root, "skills");
 
 // The server refuses an archive above this, so a bundle that outgrows it is a
@@ -60,7 +66,7 @@ if (hasSkill) {
 }
 
 const manifest: PluginManifest = {
-  id: "ghreview",
+  id: PLUGIN_ID,
   name: "Review",
   description:
     "GitHub review centre: pull requests, diffs, inline review drafts and the notification inbox, served by a separately deployed ghreview backend.",
@@ -94,9 +100,10 @@ const manifest: PluginManifest = {
 
 await writeFile(join(distDir, "plugin.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 
-const tgz = join(root, "dist", `ghreview-${version}.tgz`);
+const tgz = join(root, "dist", `${PLUGIN_ID}-${version}.tgz`);
 await rm(tgz, { force: true });
-await run(["tar", "czf", tgz, "-C", join(root, "dist"), "plugin"]);
+await run(["tar", "czf", tgz, "-C", join(root, "dist"), PLUGIN_ID]);
+await run(["bash", join(root, "scripts", "check-plugin-archive.sh"), tgz]);
 
 const size = Bun.file(tgz).size;
 console.log(`plugin.json + web/index.js -> ${tgz} (${(size / 1024).toFixed(1)} KiB)`);
