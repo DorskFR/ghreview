@@ -58,6 +58,7 @@ export async function createGhAccount(db: DbHandle, input: CreateAccountInput): 
   if (!row) {
     throw new AccountConflictError(input.login);
   }
+  await sql`DELETE FROM inaccessible_repos WHERE account = ${row.login}`;
   return row;
 }
 
@@ -124,6 +125,9 @@ export async function updateGhAccount(
       WHERE id = ${id}
       RETURNING ${tx.unsafe(PUBLIC_COLUMNS)}
     `;
+    if (row && encryptedPat !== cur.encrypted_pat) {
+      await tx`DELETE FROM inaccessible_repos WHERE account = ${cur.login}`;
+    }
     return row ?? null;
   });
 }
@@ -152,6 +156,7 @@ export async function deleteGhAccount(db: DbHandle, userId: string, id: string):
     await tx`DELETE FROM viewed_state WHERE account = ${login}`;
     await tx`DELETE FROM subscriptions WHERE account = ${login}`;
     await tx`DELETE FROM review_drafts WHERE account = ${login}`;
+    await tx`DELETE FROM inaccessible_repos WHERE account = ${login}`;
     await tx`DELETE FROM gh_accounts WHERE id = ${id}`;
     return true;
   });

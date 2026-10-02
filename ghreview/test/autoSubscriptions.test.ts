@@ -1,8 +1,14 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "bun:test";
+import { createGhAccount, updateGhAccount } from "../src/db/accounts.ts";
 import { createDb, type DbHandle } from "../src/db/client.ts";
 import { findDocument, listDocuments } from "../src/db/documents.ts";
+import { listInaccessibleRepos } from "../src/db/inaccessibleRepos.ts";
 import { runMigrations } from "../src/db/migrate.ts";
-import { listActiveSubscriptions, upsertSubscription } from "../src/db/subscriptions.ts";
+import {
+  listActiveSubscriptions,
+  type Subscription,
+  upsertSubscription,
+} from "../src/db/subscriptions.ts";
 import { createAccount } from "../src/github/account.ts";
 import type { OctokitRequest } from "../src/github/client.ts";
 import { syncNotifications } from "../src/sync/notificationSync.ts";
@@ -41,6 +47,7 @@ guarded("auto-subscription handlers", () => {
     await db.sql.unsafe("DELETE FROM subscriptions");
     await db.sql.unsafe("DELETE FROM documents");
     await db.sql.unsafe("DELETE FROM sync_state");
+    await db.sql.unsafe("DELETE FROM inaccessible_repos");
   });
 
   test("participating PR notification auto-subscribes with source=notification", async () => {
@@ -275,6 +282,92 @@ guarded("auto-subscription handlers", () => {
       SELECT active FROM subscriptions WHERE target = 'auto/repo#6'
     `;
     expect(row?.active).toBe(false);
+  });
+
+  test("a pull in a repo the token cannot read is not re-requested on the next poll", async () => {
+    const target = "acme/private-repo#3";
+    const sub: Subscription = {
+      id: "1",
+      account: "auto",
+      kind: "pull_request",
+      target,
+      active: true,
+    };
+    let calls = 0;
+    const octokit: OctokitRequest = {
+      request: async () => {
+        calls++;
+        throw { status: 404, response: { headers: {} } };
+      },
+    };
+    const { ctx } = ctxFor(octokit);
+
+    await upsertSubscription(db, "auto", "pull_request", target, "notification");
+    await syncPull(ctx, sub);
+    expect(calls).toBe(1);
+    expect(await listInaccessibleRepos(db, "auto")).toEqual(["acme/private-repo"]);
+
+    await upsertSubscription(db, "auto", "pull_request", target, "notification");
+    await syncPull(ctx, sub);
+    await syncPull(ctx, { ...sub, target: "acme/private-repo#4" });
+    expect(calls).toBe(1);
+  });
+
+  test("a rate-limited 403 does not mark the repo inaccessible", async () => {
+    const octokit: OctokitRequest = {
+      request: async () => {
+        throw { status: 403, response: { headers: { "x-ratelimit-remaining": "0" } } };
+      },
+    };
+    const { ctx } = ctxFor(octokit);
+    await syncPull(ctx, {
+      id: "1",
+      account: "auto",
+      kind: "pull_request",
+      target: "acme/private-repo#3",
+      active: true,
+    });
+    expect(await listInaccessibleRepos(db, "auto")).toEqual([]);
+  });
+
+  test("rotating the PAT clears the inaccessible-repo backoff", async () => {
+    await db.sql.unsafe("DELETE FROM gh_accounts");
+    const account = await createGhAccount(db, {
+      userId: "u-auto",
+      login: "auto",
+      encryptedPat: "sealed-old",
+    });
+    const sub: Subscription = {
+      id: "1",
+      account: "auto",
+      kind: "pull_request",
+      target: "acme/private-repo#3",
+      active: true,
+    };
+    let calls = 0;
+    let readable = false;
+    const octokit: OctokitRequest = {
+      request: async () => {
+        calls++;
+        if (!readable) throw { status: 404, response: { headers: {} } };
+        return { status: 200, headers: {}, data: { number: 3, state: "closed" } };
+      },
+    };
+    const { ctx } = ctxFor(octokit);
+
+    await syncPull(ctx, sub);
+    expect(calls).toBe(1);
+
+    await updateGhAccount(db, "u-auto", account.id, { pollIntervalMs: 60_000 });
+    await syncPull(ctx, sub);
+    expect(calls).toBe(1);
+
+    await updateGhAccount(db, "u-auto", account.id, { encryptedPat: "sealed-new" });
+    expect(await listInaccessibleRepos(db, "auto")).toEqual([]);
+    readable = true;
+    await syncPull(ctx, sub);
+    expect(calls).toBe(2);
+    expect(await listInaccessibleRepos(db, "auto")).toEqual([]);
   });
 
   test("a stored etag without a document does not hide the pull behind a 304", async () => {

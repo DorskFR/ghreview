@@ -437,6 +437,13 @@
           "created_at": {
             "type": "string",
             "nullable": true
+          },
+          "inaccessible_repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "owner/repo slugs this account's token cannot read; their pulls are skipped by the sync"
           }
         },
         "required": [

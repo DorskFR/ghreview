@@ -54,6 +54,17 @@
     },
   }));
 
+  const accountsQ = createQuery(() => ({
+    queryKey: keys.accounts(),
+    queryFn: () => api.accounts(),
+  }));
+
+  const skippedRepos = $derived(
+    (accountsQ.data?.items ?? [])
+      .filter((a) => !account || a.login === account)
+      .flatMap((a) => a.inaccessible_repos ?? []),
+  );
+
   const snoozedQ = createQuery(() => ({
     queryKey: keys.pullsSnoozed(account),
     queryFn: async (): Promise<PrEntry[]> => {
@@ -128,6 +139,18 @@
       label="Relation"
     />
   </div>
+
+  {#if skippedRepos.length > 0}
+    <div class="skipped">
+      <Callout tone="warn">
+        Skipped pull requests in {skippedRepos.length}
+        {skippedRepos.length === 1 ? "repository" : "repositories"} the token cannot read.
+        <button type="button" class="skipped-link" onclick={() => router.navigate("/accounts")}>
+          See accounts
+        </button>
+      </Callout>
+    </div>
+  {/if}
 
   {#if active.isLoading}
     <div class="state" aria-busy="true"><Skeleton lines={5} height="1.4em" /></div>
@@ -290,5 +313,17 @@
   }
   .state {
     padding: var(--gh-space-4);
+  }
+  .skipped {
+    margin-bottom: var(--gh-space-2);
+  }
+  .skipped-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--gh-accent);
+    text-decoration: underline;
+    cursor: pointer;
+    font: inherit;
   }
 </style>

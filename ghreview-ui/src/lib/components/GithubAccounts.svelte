@@ -113,6 +113,24 @@
                 onclick={() => remove(account)}
               />
             </Cluster>
+            {#if account.inaccessible_repos?.length}
+              <div class="inaccessible">
+                <Callout tone="warn">
+                  <Stack gap="var(--gh-space-1)">
+                    <Text size="sm">Repositories this token cannot read:</Text>
+                    <ul class="repos">
+                      {#each account.inaccessible_repos as slug (slug)}
+                        <li><code>{slug}</code></li>
+                      {/each}
+                    </ul>
+                    <Text size="xs" tone="muted">
+                      Grant the token the <code>repo</code> scope, or add these repositories to a
+                      fine-grained token, then add the updated token below.
+                    </Text>
+                  </Stack>
+                </Callout>
+              </div>
+            {/if}
           </li>
         {/each}
       </ul>
@@ -171,6 +189,17 @@
   li {
     padding: var(--gh-space-2) var(--gh-space-3);
     border-bottom: 1px solid var(--gh-border-muted);
+  }
+  .inaccessible {
+    margin-top: var(--gh-space-2);
+  }
+  .repos {
+    margin: 0;
+    padding-left: var(--gh-space-4);
+  }
+  .repos li {
+    padding: 0;
+    border-bottom: none;
   }
   li:last-child {
     border-bottom: none;

@@ -1,6 +1,11 @@
 import { getDocument, touchDocument, upsertDocument } from "../db/documents.ts";
 import { clearSnoozeOnActivity } from "../db/prSnooze.ts";
 import type { Subscription } from "../db/subscriptions.ts";
+import {
+  clearRepoInaccessible,
+  isRepoBackedOff,
+  markRepoInaccessible,
+} from "../db/inaccessibleRepos.ts";
 import { getSyncState } from "../db/syncState.ts";
 import { conditionalRequest } from "../github/client.ts";
 import {
@@ -19,6 +24,7 @@ export async function syncPull(ctx: SyncContext, sub: Subscription): Promise<Syn
   const parsed = sub.target ? parsePullTarget(sub.target) : null;
   if (!parsed) return skipped();
   const { owner, repo, number } = parsed;
+  if (await isRepoBackedOff(ctx.db, sub.account, owner, repo)) return skipped();
   const key = `${owner}/${repo}#${number}`;
   const existing = await getDocument(ctx.db, sub.account, "pull_request", key);
   const state = existing
@@ -34,7 +40,15 @@ export async function syncPull(ctx: SyncContext, sub: Subscription): Promise<Syn
     existing?.payload && typeof existing.payload === "object"
       ? (existing.payload as Record<string, unknown>)
       : null;
-  if (res.status === 404 || res.status === 410) {
+  const unreadable =
+    res.status === 404 ||
+    (res.status === 403 && !res.secondaryLimit && res.rate.remaining !== 0);
+  if (unreadable) {
+    await markRepoInaccessible(ctx.db, sub.account, owner, repo, res.status);
+  } else if (res.status === 200 || res.status === 304) {
+    await clearRepoInaccessible(ctx.db, sub.account, owner, repo);
+  }
+  if (unreadable || res.status === 410) {
     await removePull(ctx.db, sub.account, owner, repo, number);
   } else if (res.status === 200 && res.data) {
     const pr = res.data as { state?: string; merged?: boolean; merged_at?: string | null };
