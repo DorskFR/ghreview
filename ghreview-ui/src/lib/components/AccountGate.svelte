@@ -17,7 +17,9 @@
   const gated = $derived(query.isSuccess && (query.data?.items ?? []).length === 0);
 </script>
 
-{#if gated}
+{#if query.isPending}
+  <div class="pending" aria-busy="true"></div>
+{:else if gated}
   <div class="gate">
     <Stack gap="var(--gh-space-3)">
       <EmptyState
@@ -42,6 +44,9 @@
     display: grid;
     place-items: center;
     padding: var(--gh-space-4);
+  }
+  .pending {
+    flex: 1;
   }
   .action {
     display: flex;

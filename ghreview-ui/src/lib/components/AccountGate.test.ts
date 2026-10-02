@@ -2,6 +2,7 @@ import { QueryClient } from "@tanstack/svelte-query";
 import { flushSync, mount, unmount } from "svelte";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { configureRuntime } from "../api/config";
+import { keys } from "../api/queries";
 import { router } from "../router/router.svelte";
 import GateHost from "../testing/GateHost.svelte";
 
@@ -76,6 +77,40 @@ describe("AccountGate", () => {
     await settleUntil(() => document.querySelector(".inner") !== null);
 
     expect(document.querySelector(".gate")).toBeNull();
+    expect(document.querySelector(".inner")?.textContent).toBe("pull requests");
+  });
+
+  it("renders neither the page nor the gate while accounts are loading", async () => {
+    let release: (r: Response) => void = () => {};
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise<Response>((resolve) => (release = resolve))),
+    );
+    mountGate();
+    flushSync();
+
+    expect(document.querySelector(".inner")).toBeNull();
+    expect(document.querySelector(".gate")).toBeNull();
+
+    release(
+      new Response(JSON.stringify({ items: [], next_cursor: null }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    await settleUntil(() => document.querySelector(".gate") !== null);
+    expect(document.querySelector(".inner")).toBeNull();
+  });
+
+  it("renders the page immediately when accounts are already cached", () => {
+    client.setQueryData(keys.accounts(), {
+      items: [{ id: "a1", login: "someone", active: true }],
+      next_cursor: null,
+    });
+    respondWith([{ id: "a1", login: "someone", active: true }]);
+    mountGate();
+    flushSync();
+
     expect(document.querySelector(".inner")?.textContent).toBe("pull requests");
   });
 });
