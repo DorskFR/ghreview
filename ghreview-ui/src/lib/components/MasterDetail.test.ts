@@ -2,7 +2,7 @@ import { mount, tick, unmount } from "svelte";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Review from "../../Review.svelte";
 import { configureRuntime } from "../api/config";
-import { queryClient } from "../api/queries";
+import { keys, queryClient } from "../api/queries";
 import { router } from "../router/router.svelte";
 
 class MockEventSource {
@@ -27,8 +27,8 @@ async function renderMasterDetail(): Promise<void> {
 }
 
 // The panel only renders for a user who has connected a GitHub account — with
-// none, AccountGate replaces the whole view. So `/v1/accounts` answers with one
-// and every other list stays empty.
+// none, AccountGate replaces the whole view. So the accounts cache is seeded with
+// one, `/v1/accounts` answers with it too, and every other list stays empty.
 const ACCOUNT = {
   id: "acct-1",
   login: "someone",
@@ -58,6 +58,7 @@ beforeEach(() => {
   );
   localStorage.clear();
   queryClient.clear();
+  queryClient.setQueryData(keys.accounts(), { items: [ACCOUNT], next_cursor: null });
   router.navigate("/", true);
 });
 

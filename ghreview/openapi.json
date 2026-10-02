@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "cctui gh-review API",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "description": "Versioned HTTP+SSE contract for the GitHub review center. Relays GitHub-shaped JSONB payloads verbatim inside typed envelopes."
   },
   "servers": [
@@ -437,6 +437,13 @@
           "created_at": {
             "type": "string",
             "nullable": true
+          },
+          "inaccessible_repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "owner/repo slugs this account's token cannot read; their pulls are skipped by the sync"
           }
         },
         "required": [

@@ -2652,6 +2652,8 @@ export interface components {
             rate_limit: number | null;
             active: boolean;
             created_at: string | null;
+            /** @description owner/repo slugs this account's token cannot read; their pulls are skipped by the sync */
+            inaccessible_repos?: string[];
         };
         AccountCreate: {
             /** @description GitHub PAT (fine-grained preferred); validated, sealed, never returned */

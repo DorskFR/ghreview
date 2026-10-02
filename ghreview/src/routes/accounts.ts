@@ -8,6 +8,7 @@ import {
   listGhAccounts,
   updateGhAccount,
 } from "../db/accounts.ts";
+import { listInaccessibleRepos } from "../db/inaccessibleRepos.ts";
 import { upsertSubscription } from "../db/subscriptions.ts";
 import type { AppDeps } from "../deps.ts";
 import { validatePat } from "../github/validate.ts";
@@ -121,7 +122,14 @@ export function registerAccounts(app: OpenAPIHono, deps: AppDeps = {}) {
     if (!deps.db)
       return c.json({ error: { code: "unavailable", message: "Store not configured" } }, 503);
     const uid = getUserId(c) ?? "";
-    const items = await listGhAccounts(deps.db, uid);
+    const db = deps.db;
+    const accounts = await listGhAccounts(db, uid);
+    const items = await Promise.all(
+      accounts.map(async (a) => ({
+        ...a,
+        inaccessible_repos: await listInaccessibleRepos(db, a.login),
+      })),
+    );
     return c.json({ items }, 200);
   });
 

@@ -305,6 +305,10 @@ export const AccountSummarySchema = z
     rate_limit: z.number().int().nullable(),
     active: z.boolean(),
     created_at: z.string().nullable(),
+    inaccessible_repos: z.array(z.string()).optional().openapi({
+      description:
+        "owner/repo slugs this account's token cannot read; their pulls are skipped by the sync",
+    }),
   })
   .openapi("AccountSummary");
 
