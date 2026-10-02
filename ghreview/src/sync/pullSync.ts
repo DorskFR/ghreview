@@ -1,11 +1,11 @@
 import { getDocument, touchDocument, upsertDocument } from "../db/documents.ts";
-import { clearSnoozeOnActivity } from "../db/prSnooze.ts";
-import type { Subscription } from "../db/subscriptions.ts";
 import {
   clearRepoInaccessible,
   isRepoBackedOff,
   markRepoInaccessible,
 } from "../db/inaccessibleRepos.ts";
+import { clearSnoozeOnActivity } from "../db/prSnooze.ts";
+import type { Subscription } from "../db/subscriptions.ts";
 import { getSyncState } from "../db/syncState.ts";
 import { conditionalRequest } from "../github/client.ts";
 import {
@@ -41,8 +41,7 @@ export async function syncPull(ctx: SyncContext, sub: Subscription): Promise<Syn
       ? (existing.payload as Record<string, unknown>)
       : null;
   const unreadable =
-    res.status === 404 ||
-    (res.status === 403 && !res.secondaryLimit && res.rate.remaining !== 0);
+    res.status === 404 || (res.status === 403 && !res.secondaryLimit && res.rate.remaining !== 0);
   if (unreadable) {
     await markRepoInaccessible(ctx.db, sub.account, owner, repo, res.status);
   } else if (res.status === 200 || res.status === 304) {
